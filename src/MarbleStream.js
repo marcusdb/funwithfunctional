@@ -13,18 +13,8 @@ const duration = (ms, scheduler = Scheduler.animationFrame) => msElapsed(schedul
 const distance = (d) => (t) => t * d
 const animate = duration(2000).map(distance(200))
 
-const MarbleLinerBase = (props) => (
-  <svg style={{
-    background: '#fff',
-    width: '300px'
-  }}>
-    <line x1="0" y1="50" x2="200" y2="50" style={{
-      stroke: '#00f',
-      strokeWidth: 1
-    }} id="mainLine"/>
-    <MarbleLiner {...props}/>}
-  </svg>
-  ) class MarbleLiner extends React.Component {constructor(props) {
+class MarbleLiner extends React.Component {
+  constructor(props) {
     super(props)
     this.state = {
       marbles: {}
@@ -44,7 +34,6 @@ const MarbleLinerBase = (props) => (
     })
     this.subject.next(marble)
   }
-
   componentDidMount() {
     this.subject = new Subject();
     this.subscription = this.subject.mergeMap(marble => {
@@ -73,30 +62,35 @@ const MarbleLinerBase = (props) => (
         }
       })
     }).subscribe()
-
   }
-
   componentWillReceiveProps(nextProps) {
     nextProps.newMarbles && nextProps.newMarbles.map((value) => this.addMarble({
       id: parseInt(Math.random() * 10000),
       value
     }))
   }
-
   render() {
-    return <g>{Object.keys(this.state.marbles).map(marbleId => <Marble key={marbleId} value={this.state.marbles[marbleId].value} translate={this.state.marbles[marbleId].translate}/>)}</g>
+    return <svg style={{
+      background: '#fff',
+      width: '300px'
+    }}> <line x1="0" y1="50" x2="200" y2="50" style={{
+          stroke: '#00f',
+          strokeWidth: 1
+        }} id="mainLine"/>
+    {Object.keys(this.state.marbles).map(marbleId => <Marble key={marbleId} value={this.state.marbles[marbleId].value} translate={this.state.marbles[marbleId].translate}/>)}
+    </svg>
   }
 }
 
-  class Demo extends React.Component {constructor(props) {
+class Demo extends React.Component {
+  constructor(props) {
     super(props)
     this.state = {
       counter: 0
     }
     this.handleClick.bind(this)
   }
-  handleClick() {
-    console.log(this.state.counter)
+  handleClick() {    
     this.setState((prevState) => {
       return {
         counter: prevState.counter + 1
@@ -105,9 +99,11 @@ const MarbleLinerBase = (props) => (
   }
 
   render() {
-    return <div>
+    return (<div>
       <button onClick={() => this.handleClick()}>bla</button>
-      <MarbleLinerBase counter={this.state.counter} newMarbles={[this.state.counter]}/>
-    </div>
+      <MarbleLiner counter={this.state.counter} newMarbles={[this.state.counter]}/>
+    </div>)
   }
 }
+
+export default Demo
