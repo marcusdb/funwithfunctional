@@ -1,13 +1,14 @@
 import React from 'react';
 import Rx from 'rxjs';
 
-const {Observable, Scheduler} = Rx
+const {Observable, Scheduler,Subject} = Rx
 
 const msElapsed = (scheduler = Scheduler.animationFrame) => Observable.defer(() => {
   const start = scheduler.now();
   return Observable.interval(0, scheduler).map(() => scheduler.now() - start)
 })
 
+const velocity = (pixelsPerSeg, scheduler = Scheduler.animationFrame) => msElapsed(scheduler).map(elapsed => parseInt(elapsed * (pixelsPerSeg/1000)))
 const duration = (ms, scheduler = Scheduler.animationFrame) => msElapsed(scheduler).map(elapsed => elapsed / ms).takeWhile(t => t <= 1)
 
 const distance = (d) => (t) => t * d
@@ -28,7 +29,7 @@ const Marble = (props) => (
   </g>
 )
 
-const MarbleLinerBase=(props)=>(<svg style={{background:'#fff'}}>
+const MarbleLinerBase=(props)=>(<svg style={{background:'#fff',width:'300px'}}>
     <line x1="0" y1="50" x2="200" y2="50" style={{
       stroke: '#00f',
       strokeWidth: 1
@@ -41,47 +42,44 @@ class MarbleLiner extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      marbles: {
-        1: {
-          value: '1',
-          translate: 0
-        }
-      }
+      marbles: {}
     }
     this.addMarble.bind(this)
   }
-  addMarble({
-    marbleId,
-    value = 0
-  }) {
-    const observer = {
-      next: (x) => {
-        this.setState({
-          marbles: {
-            [marbleId]: {
-              translate: x,
-              value: value
-            }
-          }
-        })
-      },
-      complete: () => {
-        this.setState((prevState) => {
-          delete prevState.marbles[marbleId]
-          return prevState;
-        })
-      }
-    };
-    animate.subscribe(observer)
+  addMarble(marble) {
+    this.setState((prevState)=>{
+      let newState={...prevState}
+      newState.marbles[marble.id]={...marble,translate:0}
+      return newState;
+    })
+    this.subject.next(marble)
   }
 
+
+
   componentDidMount() {
-    Object.keys(this.state.marbles).map((marbleId) => this.addMarble({marbleId}))
+    this.subject=new Subject();
+    this.subscription=this.subject.mergeMap(marble=>{
+      return velocity(50).distinct().do(distance=>{
+        this.setState((prevState)=>{
+          let newState={...prevState}
+          newState.marbles[marble.id]={...marble,translate:distance}
+          return newState;
+        })
+      }).doOnCompleted({
+        this.setState((prevState)=>{
+          let newState={...prevState}
+          delete newState.marbles[marble.id]
+          return newState;
+        })
+      }).takeWhile(distance=>distance<200)
+    }).subscribe()
+
   }
 
   componentWillReceiveProps(nextProps) {
     nextProps.newMarbles && nextProps.newMarbles.map((value) => this.addMarble({
-      marbleId: parseInt(Math.random() * 10000),
+      id: parseInt(Math.random() * 10000),
       value
     }))
   }
@@ -111,7 +109,6 @@ class Demo extends React.Component {
   render() {
     return <div>
       <button onClick={() => this.handleClick()}>bla</button>
-      {this.state.counter}
       <MarbleLinerBase counter={this.state.counter} newMarbles={[this.state.counter]}/>
     </div>
   }
