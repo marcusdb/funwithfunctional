@@ -1,45 +1,30 @@
 import React from 'react';
 import Rx from 'rxjs';
+import Marble from './Marble'
 
-const {Observable, Scheduler,Subject} = Rx
-
+const {Observable, Scheduler, Subject} = Rx
 const msElapsed = (scheduler = Scheduler.animationFrame) => Observable.defer(() => {
   const start = scheduler.now();
   return Observable.interval(0, scheduler).map(() => scheduler.now() - start)
 })
+const velocity = (pixelsPerSeg, scheduler = Scheduler.animationFrame) => msElapsed(scheduler).map(elapsed => parseInt(elapsed * (pixelsPerSeg / 1000)))
 
-const velocity = (pixelsPerSeg, scheduler = Scheduler.animationFrame) => msElapsed(scheduler).map(elapsed => parseInt(elapsed * (pixelsPerSeg/1000)))
 const duration = (ms, scheduler = Scheduler.animationFrame) => msElapsed(scheduler).map(elapsed => elapsed / ms).takeWhile(t => t <= 1)
-
 const distance = (d) => (t) => t * d
-
 const animate = duration(2000).map(distance(200))
 
-const Marble = (props) => (
-  <g >
-    <circle style={{
-      fill: "#000"
-    }} cx={10 + props.translate} cy="50" r="2"></circle>
-    <text x={8 + props.translate} y="45" style={{
-      fontFamily: 'Times New Roman',
-      fontSize: '5px',
-      fill: '#000'
-    }}>{props.value}</text>
-
-  </g>
-)
-
-const MarbleLinerBase=(props)=>(<svg style={{background:'#fff',width:'300px'}}>
+const MarbleLinerBase = (props) => (
+  <svg style={{
+    background: '#fff',
+    width: '300px'
+  }}>
     <line x1="0" y1="50" x2="200" y2="50" style={{
       stroke: '#00f',
       strokeWidth: 1
-    }} id="mainLine"/> <MarbleLiner {...props}/>}
-
+    }} id="mainLine"/>
+    <MarbleLiner {...props}/>}
   </svg>
-)
-
-class MarbleLiner extends React.Component {
-  constructor(props) {
+  ) class MarbleLiner extends React.Component {constructor(props) {
     super(props)
     this.state = {
       marbles: {}
@@ -47,34 +32,46 @@ class MarbleLiner extends React.Component {
     this.addMarble.bind(this)
   }
   addMarble(marble) {
-    this.setState((prevState)=>{
-      let newState={...prevState}
-      newState.marbles[marble.id]={...marble,translate:0}
+    this.setState((prevState) => {
+      let newState = {
+        ...prevState
+      }
+      newState.marbles[marble.id] = {
+        ...marble,
+        translate: 0
+      }
       return newState;
     })
     this.subject.next(marble)
   }
 
-
-
   componentDidMount() {
-    this.subject=new Subject();
-    this.subscription=this.subject.mergeMap(marble=>{
-      return velocity(50).distinct().takeWhile(distance=>distance<200).do({
-        next:distance=>{
-        this.setState((prevState)=>{
-          let newState={...prevState}
-          newState.marbles[marble.id]={...marble,translate:distance}
-          return newState;
-        })
-      },complete:()=>{
-        console.log('onComplete')
-        this.setState((prevState)=>{
-          let newState={...prevState}
-          delete newState.marbles[marble.id]
-          return newState;
-        })
-      }})
+    this.subject = new Subject();
+    this.subscription = this.subject.mergeMap(marble => {
+      return velocity(50).distinct().takeWhile(distance => distance < 200).do({
+        next: distance => {
+          this.setState((prevState) => {
+            let newState = {
+              ...prevState
+            }
+            newState.marbles[marble.id] = {
+              ...marble,
+              translate: distance
+            }
+            return newState;
+          })
+        },
+        complete: () => {
+          console.log('onComplete')
+          this.setState((prevState) => {
+            let newState = {
+              ...prevState
+            }
+            delete newState.marbles[marble.id]
+            return newState;
+          })
+        }
+      })
     }).subscribe()
 
   }
@@ -91,8 +88,7 @@ class MarbleLiner extends React.Component {
   }
 }
 
-class Demo extends React.Component {
-  constructor(props) {
+  class Demo extends React.Component {constructor(props) {
     super(props)
     this.state = {
       counter: 0
@@ -115,5 +111,3 @@ class Demo extends React.Component {
     </div>
   }
 }
-
-export default Demo
