@@ -60,19 +60,21 @@ class MarbleLiner extends React.Component {
   componentDidMount() {
     this.subject=new Subject();
     this.subscription=this.subject.mergeMap(marble=>{
-      return velocity(50).distinct().do(distance=>{
+      return velocity(50).distinct().takeWhile(distance=>distance<200).do({
+        next:distance=>{
         this.setState((prevState)=>{
           let newState={...prevState}
           newState.marbles[marble.id]={...marble,translate:distance}
           return newState;
         })
-      }).doOnCompleted({
+      },complete:()=>{
+        console.log('onComplete')
         this.setState((prevState)=>{
           let newState={...prevState}
           delete newState.marbles[marble.id]
           return newState;
         })
-      }).takeWhile(distance=>distance<200)
+      }})
     }).subscribe()
 
   }
