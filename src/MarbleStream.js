@@ -63,6 +63,9 @@ class MarbleLiner extends React.Component {
       })
     }).subscribe()
   }
+  componentWillUnmount(){
+    this.subscription.unsubscribe()
+  }
   componentWillReceiveProps(nextProps) {
     nextProps.newMarbles && nextProps.newMarbles.map((value) => this.addMarble({
       id: parseInt(Math.random() * 10000),
@@ -90,7 +93,7 @@ class Demo extends React.Component {
     }
     this.handleClick.bind(this)
   }
-  handleClick() {    
+  handleClick() {
     this.setState((prevState) => {
       return {
         counter: prevState.counter + 1
