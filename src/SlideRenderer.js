@@ -9,14 +9,10 @@ class SlideRenderer extends React.Component {
   }
 
   componentDidMount() {
-    console.log('this.props.trigger:' + this.props.trigger)
-    console.log(this.props)
     window.Reveal.addEventListener(this.props.trigger, () => {
-      console.log('this.props.trigger ACTIVATED' + this.props.trigger)
       this.setState({active: true})
-      window.Reveal.addEventListener('slidechanged', () => {
-        window.Reveal.addEventListener('slidechanged', () => {
-          console.log('this.props.trigger DEACTIVATED!!!!!!!' + this.props.trigger)
+      window.Reveal.addEventListener('slidechanged', () => {//finished the transition to me
+        window.Reveal.addEventListener('slidechanged', () => {//moving away from me
           this.setState({active: false})
         }, {once: true})
       },{once: true})
