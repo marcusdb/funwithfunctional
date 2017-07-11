@@ -1,5 +1,5 @@
 /* global module:false */
-
+/* jshint node: true */
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
   var port = grunt.option('port') || 8000;
@@ -118,7 +118,7 @@ module.exports = function(grunt) {
         files: [
           'Gruntfile.js', 'js/reveal.js', 'src/*'
         ],
-        tasks: 'js'
+        tasks: 'react'
       },
       theme: {
         files: [
@@ -154,9 +154,15 @@ module.exports = function(grunt) {
         presets: ['react', 'es2015']
       },
       dist: {
-        files: {
-          'build/App.js': 'src/App.js'
-        }
+        files: [
+          {
+            "expand": true,
+            "cwd": "src/",
+            "src": ["**/*.js"],
+            "dest": "build/",
+            "ext": ".js"
+          }
+        ]
       }
     },
     browserify: {
@@ -182,7 +188,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-retire');
 
   // Default task
-  grunt.registerTask('default', ['babel','browserify', 'css', 'js']);
+  grunt.registerTask('default', ['babel', 'browserify', 'css', 'js']);
+
+  //babel & browserify
+  grunt.registerTask('react', ['babel', 'browserify']);
 
   // JS task
   grunt.registerTask('js', ['jshint', 'uglify', 'qunit']);
@@ -200,7 +209,7 @@ module.exports = function(grunt) {
   grunt.registerTask('package', ['default', 'zip']);
 
   // Serve presentation locally
-  grunt.registerTask('serve', ['babel','browserify', 'connect', 'watch']);
+  grunt.registerTask('serve', ['babel', 'browserify', 'connect', 'watch']);
 
   // Run tests
   grunt.registerTask('test', ['jshint', 'qunit']);
