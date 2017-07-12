@@ -7,7 +7,7 @@ const Marble = (props) => (
     }} cx={props.offset+10 + props.translate} cy="25" r="10"></circle>
     <text x={props.offset+6 + props.translate} y="10" style={{
       fontFamily: 'Times New Roman',
-      fontSize: '16px',
+      fontSize: '14px',
       fill: '#fff'
     }}>{props.value}</text>
 

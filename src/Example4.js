@@ -13,55 +13,56 @@ class Example4 extends React.Component {
 
   }
 
-  draw(value,name) {
+  draw(value, name) {
     this.setState((prevState) => {
-      return {[name]:{value,id: parseInt(Math.random() * 10000)}};
+      return {
+        [name]: {
+          value,
+          id: parseInt(Math.random() * 10000)
+        }
+      };
     })
 
   }
 
   componentDidMount() {
-    Rx.Observable.fromEvent(document.getElementById('example4_btn1'), 'click').map(() => 1).do
-      ((value) => {
-        this.draw(value,'stream1')
-      }).subscribe()
-      Rx.Observable.fromEvent(document.getElementById('example4_btn2'), 'click').map(() => -1).do
-        ((value) => {
-          this.draw(value,'stream2')
-        }).subscribe()
-  }
+    let plus$ = Rx.Observable.fromEvent(document.getElementById('example4_btn1'), 'click')
+    plus$.map(() => 1).do((value) => this.draw(value, 'stream1')).subscribe()
 
-  render() {
-    return (
-      <div>
-        <h3>stream de eventos</h3>
-        <button id='example4_btn1' style={{
-          width: '60px',
-          height: '30px',
-          fontSize: '24px'
-        }}>+1</button>
-        <button id='example4_btn2' style={{
-          width: '60px',
-          height: '30px',
-          fontSize: '24px'
-        }}>-1</button>
-        <pre><code is className="javascript hljs" data-trim contenteditable>
+
+    let minus$ = Rx.Observable.fromEvent(document.getElementById('example4_btn2'), 'click')
+    minus$.map(() => -1).do((value) => this.draw(value, 'stream2')).subscribe()
+      }
+
+      render() {
+        return (
+          <div>
+            <h3>stream de eventos</h3>
+            <button id='example4_btn1' style={{
+              width: '60px',
+              height: '30px',
+              fontSize: '24px'
+            }}>+1</button>
+            <button id='example4_btn2' style={{
+              width: '60px',
+              height: '30px',
+              fontSize: '24px'
+            }}>-1</button>
+            <pre><code is className="javascript hljs" data-trim contenteditable>
           {`
-            Rx.Observable.fromEvent(document.getElementById('example4_btn1'), 'click')
-            .map(() => 1).do((value) => {
-                this.draw(value,'stream1')
-              }).subscribe()
-            Rx.Observable.fromEvent(document.getElementById('example4_btn2'), 'click')
-            .map(() => -1).do((value) => {
-                this.draw(value,'stream2')
-              }).subscribe()
+            let plus$ = Rx.Observable.fromEvent(document.getElementById('example4_btn1'), 'click')
+            plus$.map(() => 1).do((value) => this.draw(value, 'stream1')).subscribe()
+
+
+            let minus$ = Rx.Observable.fromEvent(document.getElementById('example4_btn2'), 'click')
+            minus$.map(() => -1).do((value) => this.draw(value, 'stream2')).subscribe()
 `}
         </code></pre>
-        <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>
-        <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream2}/>        
-      </div>
-    )
-  }
-}
+            <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>
+            <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream2}/>
+          </div>
+        )
+      }
+    }
 
-export default Example4
+    export default Example4
