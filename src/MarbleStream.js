@@ -67,15 +67,15 @@ class MarbleLiner extends React.Component {
     this.subscription.unsubscribe()
   }
   componentWillReceiveProps(nextProps) {
-    nextProps.newMarbles && nextProps.newMarbles.map((value) => this.addMarble({
-      id: parseInt(Math.random() * 10000),
-      value
-    }))
+    if(this.props.marble.id !==nextProps.marble.id){
+      this.addMarble(nextProps.marble)
+    }
   }
-  render() {    
+  render() {
     return <svg style={{
-      width: '100%'
-    }}> <line x1={this.props.offset} y1="50" x2={this.props.distance} y2="50" style={{
+      width: '100%',
+      height: '50px'
+    }}> <line x1={this.props.offset} y1="25" x2={this.props.distance} y2="25" style={{
           stroke: '#fff',
           strokeWidth: 1
         }} id="mainLine"/>

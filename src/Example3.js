@@ -6,17 +6,23 @@ class Example3 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      counter: 0
+      stream1: 0
     }
+    this.draw.bind(this)
+
+  }
+
+  draw(value,name) {
+    this.setState((prevState) => {
+      return {[name]:{value,id: parseInt(Math.random() * 10000)}};
+    })
 
   }
 
   componentDidMount() {
     Rx.Observable.fromEvent(document.getElementById('example3_btn1'), 'click').map(() => 1).do
-      (() => {
-        this.setState((prevState) => {
-          return {counter: 1};
-        })
+      ((value) => {
+        this.draw(value,'stream1')
       }).subscribe()
   }
 
@@ -35,7 +41,7 @@ let eventStream =Rx.Observable.fromEvent($("example2_btn1"),'click');
 
 eventStream.do(console.log).subscribe();`}
         </code></pre>
-        <MarbleStream velocity={80} offset={50} distance={900} counter={this.state.counter} newMarbles={[this.state.counter]}/>
+        <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>
       </div>
     )
   }
