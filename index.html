@@ -11,9 +11,10 @@
 	<link rel="stylesheet" href="css/theme/night.css">
 
 	<!-- Theme used for syntax highlighting of code -->
-	<link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="lib/css/monokai.css">
 
-	<!-- Printing and PDF exports --><script>
+	<!-- Printing and PDF exports -->
+	<script>
 		var link = document.createElement('link');
 		link.rel = 'stylesheet';
 		link.type = 'text/css';
@@ -21,27 +22,110 @@
 		document.getElementsByTagName('head')[0].appendChild(link);
 	</script>
 	<style>
-	.shadow {
-	    text-shadow: 4px 4px #000 !important ;
-	}
-</style>
+		.shadow {
+			text-shadow: 4px 4px #000 !important;
+		}
+	</style>
 </head>
 
 <body>
 	<div class="reveal">
-		<div id="slides"></div>
+		<div class="slides">
+			<section data-background="img/zwift-screen-watopia-2.jpg">
+				<img src="img/zwift-primary-color.png" style="width:200px; background-color: white" />
+				<h2 class="shadow">Tech Talk & Happy Hour</h2>
+			</section>
+			<section>
+				<h2 class="shadow">Fun with Functional Reactive Programming</h2>
+				<h4 class="shadow">Marcus David Bronstein @marcusdb</h4>
+			</section>
+			<section>
+				<section>
+					<blockquote cite="http://www.introtorx.com/Content/v1.0.10621.0/01_WhyRx.html#WhyRx" style="font-size:24px">
+						&ldquo;Users expect real time data. They want their tweets now. Their order confirmed now. They need prices accurate as of now. Their online games need to be responsive. As a developer, you demand fire-and-forget messaging. You don't want to be blocked
+						waiting for a result. You want to have the result pushed to you when it is ready. Even better, when working with result sets, you want to receive individual results as they are ready. You do not want to wait for the entire set to be processed before
+						you see the first row. The world has moved to push; users are waiting for us to catch up. Developers have tools to push data, this is easy. Developers need tools to react to push data.&rdquo;
+					</blockquote>
+				</section>
+				<section data-background='img/mind-blown.gif'></section>
+				<section data-state="slideA">
+					<SlideRenderer trigger="slideA"><img src="img/mind-blown.gif" /></SlideRenderer>
+				</section>
+			</section>
+
+			<section id="fragments">
+				<h2>Tempo real</h2>
+				<p class="fragment">o que nos leva a código assíncrono</p>
+				<p class="fragment">o que nos leva a callbacks??!</p>
+				<aside class="notes">
+					This slide has fragments which are also stepped through in the notes window.
+				</aside>
+			</section>
+			<section>
+				<h3>Código tradicional</h3>
+				<div>
+					<button id='btn1' style="width:60px; height: 30px; font-size: 24px">+1</button> resultado:
+					<span id="result">0</span>
+					<button id='btn2' style="width:60px; height: 30px; font-size: 24px">-1</button>
+					<pre><code class="hljs" data-trim contenteditable>
+						var total = 0;
+						$('#btn1').click(() => {
+							total = total + 1
+							$('#result').text(total)
+						});
+						$('#btn2').click(() => {
+							total = total - 1
+							$('#result').text(total)
+						});
+						</code></pre>
+				</div>
+			</section>
+			<section>
+				<h3>mudando os paradigmas</h3>
+				<pre class="fragment"><code class="hljs" data-trim contenteditable>
+					let eventos = [+1,+1,-1,+1]
+</code></pre>
+				<pre class="fragment"><code class="hljs" data-trim contenteditable>
+	var total = eventos.reduce(function(soma, valor) {
+	  return soma + valor;
+	}, 0);
+</code></pre>
+				<pre class="fragment"><code class="hljs" data-trim contenteditable>
+$('#result').text(total)
+</code></pre>
+			</section>
+			<section>
+				<h3>stream de eventos</h3>
+				<button id='example2_btn1' style="width:60px; height: 30px; font-size: 24px">+1</button>
+				<pre><code class="javascript hljs" data-trim contenteditable>
+						let eventStream =Rx.Observable.fromEvent($("example2_btn1"),'click')
+
+						eventStream.do(console.log).subscribe();
+					</code></pre>
+
+			</section>
+			<section id='example3'>
+
+			</section>
+		</div>
 
 	</div>
 
 	<script src="lib/js/head.min.js"></script>
 	<script src="js/reveal.js"></script>
 	<script src="dist/App.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/5.4.2/Rx.min.js"></script>
 
 	<script>
 		// More info about config & dependencies:
 		// - https://github.com/hakimel/reveal.js#configuration
 		// - https://github.com/hakimel/reveal.js#dependencies
 		Reveal.initialize({
+			//parallaxBackgroundImage:'/img/paralax.png',
+			//parallaxBackgroundSize: '2560px 1537px', // CSS syntax, e.g. "2100px 900px" - currently only pixels are supported (don't use % or auto)
+			history: true,
+
 			dependencies: [{
 					src: 'plugin/markdown/marked.js'
 				},
@@ -61,6 +145,24 @@
 				}
 			]
 		});
+	</script>
+	<script>
+		$(function() {
+			//EXAMPLE1
+			var total = 0;
+			$('#btn1').click(() => {
+				total = total + 1
+				$('#result').text(total)
+			});
+			$('#btn2').click(() => {
+				total = total - 1
+				$('#result').text(total)
+			});
+		});
+		//EXAMPLE1 END
+		//EXAMPLE2
+		Rx.Observable.fromEvent($("#example2_btn1"), 'click').do(console.log).subscribe();
+		//EXAMPLE2 END
 	</script>
 </body>
 

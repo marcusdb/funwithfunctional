@@ -37,7 +37,7 @@ class MarbleLiner extends React.Component {
   componentDidMount() {
     this.subject = new Subject();
     this.subscription = this.subject.mergeMap(marble => {
-      return velocity(50).distinct().takeWhile(distance => distance < 200).do({
+      return velocity(this.props.velocity).distinct().takeWhile(distance => distance < (this.props.distance-this.props.offset)).do({
         next: distance => {
           this.setState((prevState) => {
             let newState = {
@@ -72,41 +72,16 @@ class MarbleLiner extends React.Component {
       value
     }))
   }
-  render() {
+  render() {    
     return <svg style={{
-      background: '#fff',
-      width: '300px'
-    }}> <line x1="0" y1="50" x2="200" y2="50" style={{
-          stroke: '#00f',
+      width: '100%'
+    }}> <line x1={this.props.offset} y1="50" x2={this.props.distance} y2="50" style={{
+          stroke: '#fff',
           strokeWidth: 1
         }} id="mainLine"/>
-    {Object.keys(this.state.marbles).map(marbleId => <Marble key={marbleId} value={this.state.marbles[marbleId].value} translate={this.state.marbles[marbleId].translate}/>)}
+    {Object.keys(this.state.marbles).map(marbleId => <Marble offset={50} key={marbleId} value={this.state.marbles[marbleId].value} translate={this.state.marbles[marbleId].translate}/>)}
     </svg>
   }
 }
 
-class Demo extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      counter: 0
-    }
-    this.handleClick.bind(this)
-  }
-  handleClick() {
-    this.setState((prevState) => {
-      return {
-        counter: prevState.counter + 1
-      };
-    })
-  }
-
-  render() {
-    return (<div>
-      <button onClick={() => this.handleClick()}>bla</button>
-      <MarbleLiner counter={this.state.counter} newMarbles={[this.state.counter]}/>
-    </div>)
-  }
-}
-
-export default Demo
+export default MarbleLiner

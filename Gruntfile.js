@@ -149,7 +149,7 @@ module.exports = function(grunt) {
       options: {}
     },
     babel: {
-      options: {
+      options: {        
         sourceMap: true,
         "plugins": ["transform-object-rest-spread"],
         presets: ['react', 'es2015']
