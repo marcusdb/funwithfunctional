@@ -50,12 +50,12 @@ class Example4 extends React.Component {
             }}>-1</button>
             <pre><code is className="javascript hljs" data-trim contenteditable>
           {`
-            let plus$ = Rx.Observable.fromEvent(document.getElementById('example4_btn1'), 'click')
-            plus$.map(() => 1).do((value) => this.draw(value, 'stream1')).subscribe()
+            let plus$ = Rx.Observable.fromEvent(element, 'click')
+            plus$.map(() => 1).subscribe()
 
 
-            let minus$ = Rx.Observable.fromEvent(document.getElementById('example4_btn2'), 'click')
-            minus$.map(() => -1).do((value) => this.draw(value, 'stream2')).subscribe()
+            let minus$ = Rx.Observable.fromEvent(element, 'click')
+            minus$.map(() => -1).subscribe()
 `}
         </code></pre>
             <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>
