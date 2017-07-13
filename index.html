@@ -53,13 +53,132 @@
 				</section>
 			</section>
 
-			<section id="fragments">
-				<h2>Tempo real</h2>
-				<p class="fragment">o que nos leva a código assíncrono</p>
-				<p class="fragment">o que nos leva a callbacks??!</p>
-				<aside class="notes">
-					This slide has fragments which are also stepped through in the notes window.
-				</aside>
+			<section id="tempoReal">
+				<section>
+					<h2>Tempo real</h2>
+					<p class="fragment">o que nos leva a código assíncrono</p>
+					<p class="fragment">o que nos leva a callbacks??!</p>
+					<aside class="notes">
+						This slide has fragments which are also stepped through in the notes window.
+					</aside>
+				</section>
+				<section>
+					<h6>Callback Hell</h6>
+					<pre><code is className="javascript hljs" data-trim contenteditable style="font-size: 10px !important;">
+getData(function(a){
+		getMoreData(a, function(b){
+				getMoreData(b, function(c){
+						getMoreData(c, function(d){
+								getMoreData(d, function(e){
+										...
+								});
+						});
+				});
+		});
+});			</code></pre>
+
+
+				</section>
+				<section>
+					<h6>Callback Hell</h6>
+					<pre><code is className="javascript hljs" data-trim contenteditable style="font-size: 10px !important;">
+						var fs = require('fs');
+						var myFile = '/tmp/test';
+						fs.readFile(myFile, 'utf8', function(err, txt) {
+								if (err) return console.log(err);
+								txt = txt + '\nAppended something!';
+								fs.writeFile(myFile, txt, function(err) {
+										if(err) return console.log(err);
+										console.log('Appended text!');
+								});
+						});
+					</code></pre>
+				</section>
+				<section>
+					<h6>Promises to the rescue</h6>
+					<pre><code is className="javascript hljs" data-trim contenteditable style="font-size: 10px !important;">
+						var Promise = require('bluebird');
+						var fs = require('fs');
+						Promise.promisifyAll(fs);
+
+						var myFile = '/tmp/test';
+						fs.readFileAsync(myFile, 'utf8').then(function(txt) {
+						    txt = txt + '\nAppended something!';
+						    fs.writeFile(myFile, txt);
+						}).then(function() {
+						    console.log('Appended text!');
+						}).catch(function(err) {
+						    console.log(err);
+						});
+					</code></pre>
+				</section>
+				<section>
+					<h6>Promises</h6>
+					<ul>
+						<li>Read only view to a single future value</li>
+						<li>Success and Error semantics via .then()</li>
+						<li>Not lazy. By the time you have a promise, it's on its way to being resolved</li>
+						<li>Immutable and uncancellable. your promise will resolve or reject, and only once</li>
+					</ul>
+				</section>
+				<section>
+					<h6>Observale ==>Promises++</h6>
+					<ul>
+						<li>Stream or sets</li>
+						<li>of any number of things</li>
+						<li>Over any amount of time</li>
+						<li>Lazy. Observables will not generate values via an underlying producer until they're subscribed to</li>
+						<li>Can be "unsubscribed" from. This means the underlying producer can be told to stop and tear down</li>
+					</ul>
+				</section>
+				<section>
+					<h6>Creating a promise</h6>
+					<pre><code is className="javascript hljs" data-trim contenteditable style="font-size: 10px !important;">
+let p = new Promise((resolve, reject) => {
+  doAsyncThing((err, value) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(value);
+    }
+  });
+});
+
+					</code></pre>
+				</section>
+				<section>
+					<h6>Creating an Observable</h6>
+					<pre><code is className="javascript hljs" data-trim contenteditable style="font-size: 10px !important;">
+let o = new Observable(observer => {
+  doAsyncThing((err, value) => {
+    if (err) {
+      observer.error(err);
+    } else {
+      observer.next(value);
+      observer.complete();
+    }
+  });
+});
+					</code></pre>
+				</section>
+				<section>
+					<h6>Observable tear down</h6>
+					<pre><code is className="javascript hljs" data-trim contenteditable style="font-size: 10px !important;">
+let o = new Observable(observer => {
+  const token = doAsyncThing((err, value) => {
+    if (err) {
+      observer.error(err);
+    } else {
+      observer.next(value);
+      observer.complete();
+    }
+  });
+ return () => {
+   cancelAsyncThing(token);//tear down
+ };
+});
+					</code></pre>
+				</section>
 			</section>
 			<section>
 				<h3>Código tradicional</h3>
@@ -111,7 +230,7 @@ $('#result').text(total)
 			<section id='example7'></section>
 			<section id='example8'>
 				Drag And Drop
-        <pre><code is class="javascript hljs" data-trim contenteditable>
+				<pre><code is class="javascript hljs" data-trim contenteditable>
 
             let mouseup$ = Rx.Observable.fromEvent(element, 'mouseup')
             let mousemove$ = Rx.Observable.fromEvent(element, 'mousemove')
@@ -123,9 +242,9 @@ $('#result').text(total)
             mousedrag$.subscribe((resultPosition) => this.updatePosition(resultPosition));
 
         </code></pre>
-        <aside class="notes">
-          code pen https://codepen.io/marcusdb/pen/GEwYZd plain https://codepen.io/marcusdb/pen/rwPOEJ
-        </aside>
+				<aside class="notes">
+					code pen https://codepen.io/marcusdb/pen/GEwYZd plain https://codepen.io/marcusdb/pen/rwPOEJ
+				</aside>
 				<div id='dragTarget' style="background-color:#f00; width: 200px; height: 200px; position: absolute; left:400px; padding:0; margin:0; cursor: 'move';">
 					drag me
 				</div>
@@ -133,8 +252,26 @@ $('#result').text(total)
 			<section id='example9'></section>
 			<section id='example10'></section>
 			<section id='example11'></section>
-			<section id='everything'><img src='/img/everythingisastream.jpg'></img></section>
+			<section id='everything'><img src='/img/everythingisastream.jpg'></img>
+			</section>
 			<section id='example12'></section>
+			<section>
+				<section>
+					<h3>Performance</h3></section>
+				<section id='performance1'>
+					<h6>Performance without function composition</h6>
+					<video data-autoplay>
+					<source src="/videos/media1.mp4" type="video/mp4" />
+				</video>
+				</section>
+				<section id='performance2'>
+					<h6>Performance with function composition</h6>
+					<video data-autoplay>
+					<source src="/videos/media2.mp4" type="video/mp4" />
+				</video>
+				</section>
+			</section>
+
 		</div>
 
 	</div>

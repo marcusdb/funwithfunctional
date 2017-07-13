@@ -41,7 +41,8 @@ class Example12 extends React.Component {
   render() {
     return (
       <div>
-        <h3>stream de eventos</h3>
+        <h3>Desafio do triple (ou maior) click</h3>
+        <div className="fragment">
         <button id='example12_btn1' style={{
           width: '120px',
           height: '30px',
@@ -61,7 +62,7 @@ class Example12 extends React.Component {
         </code></pre>
         <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>
         <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream2}/>
-
+        </div>
       </div>
     )
   }
