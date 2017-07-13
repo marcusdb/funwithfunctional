@@ -109,7 +109,27 @@ $('#result').text(total)
 			<section id='example5'></section>
 			<section id='example6'></section>
 			<section id='example7'></section>
-			<section id='example8'></section>
+			<section id='example8'>
+				Drag And Drop
+        <pre><code is class="javascript hljs" data-trim contenteditable>
+
+            let mouseup$ = Rx.Observable.fromEvent(element, 'mouseup')
+            let mousemove$ = Rx.Observable.fromEvent(element, 'mousemove')
+            let mousedown$ = Rx.Observable.fromEvent(element, 'mousedown').map(event => getOffset(event))
+            let mousedrag$ = mousedown$.mergeMap((offsetData) =>
+                mousemove$.map((position) => (calculateNewPositionWithOffset(offsetData,position)))
+                .takeUntil(mouseup$)
+            )
+            mousedrag$.subscribe((resultPosition) => this.updatePosition(resultPosition));
+
+        </code></pre>
+        <aside class="notes">
+          code pen https://codepen.io/marcusdb/pen/GEwYZd plain https://codepen.io/marcusdb/pen/rwPOEJ
+        </aside>
+				<div id='dragTarget' style="background-color:#f00; width: 200px; height: 200px; position: absolute; left:400px; padding:0; margin:0; cursor: 'move';">
+					drag me
+				</div>
+			</section>
 		</div>
 
 	</div>
@@ -166,6 +186,52 @@ $('#result').text(total)
 		//EXAMPLE2
 		Rx.Observable.fromEvent($("#example2_btn1"), 'click').do(console.log).subscribe();
 		//EXAMPLE2 END
+		//EXAMPLE 8
+		var element = document.getElementById("dragTarget");
+		var getOffset = el => {
+			return {
+				left: el.offsetLeft,
+				top: el.offsetTop
+			};
+			//return el.getBoundingClientRect();
+		};
+
+		let mouseup$ = Rx.Observable.fromEvent(element, "mouseup");
+
+		let mousemove$ = Rx.Observable.fromEvent(element, "mousemove");
+		let mousedown$ = Rx.Observable.fromEvent(element, "mousedown").map(event => {
+			event.preventDefault();
+			let offset = getOffset(element);
+			console.log(offset)
+			return {
+				left: event.clientX - offset.left,
+				top: event.clientY - offset.top
+			};
+		})
+
+		let mousedrag$ = mousedown$.mergeMap(offsetData =>
+			mousemove$
+			.map(position => {
+				return {
+					left: position.clientX - offsetData.left + 'px',
+					top: position.clientY - offsetData.top + 'px'
+				};
+			})
+			.takeUntil(mouseup$)
+			.do({
+				complete: () => {
+					console.log("done");
+				}
+			})
+		);
+
+		mousedrag$.subscribe(resultPosition => {
+
+			document.getElementById("dragTarget").style.top = resultPosition.top;
+			document.getElementById("dragTarget").style.left = resultPosition.left;
+
+		});
+		// EXAMPLE 8 END
 	</script>
 </body>
 
