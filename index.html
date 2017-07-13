@@ -40,17 +40,26 @@
 				<h4 class="shadow">Marcus David Bronstein @marcusdb</h4>
 			</section>
 			<section>
+				<h4 class="shadow">Marcus David Bronstein</h4>
+				CTO da Rastreabilidade Brasil S.A.
+				marcusdb@gmail.com
+			</section>
+			<section>
 				<section>
 					<blockquote cite="http://www.introtorx.com/Content/v1.0.10621.0/01_WhyRx.html#WhyRx" style="font-size:24px">
-						&ldquo;Users expect real time data. They want their tweets now. Their order confirmed now. They need prices accurate as of now. Their online games need to be responsive. As a developer, you demand fire-and-forget messaging. You don't want to be blocked
-						waiting for a result. You want to have the result pushed to you when it is ready. Even better, when working with result sets, you want to receive individual results as they are ready. You do not want to wait for the entire set to be processed before
-						you see the first row. The world has moved to push; users are waiting for us to catch up. Developers have tools to push data, this is easy. Developers need tools to react to push data.&rdquo;
+						&ldquo;
+						<p></p>Users expect real time data.</p>
+						<p>
+							They want their tweets now. Their order confirmed now. They need prices accurate as of now. Their online games need to be responsive.</p>
+						<p>
+							As a developer, you demand fire-and-forget messaging. You don't want to be blocked waiting for a result.</p>
+						<p>
+							You want to have the result pushed to you when it is ready. Even better, when working with result sets, you want to receive individual results as they are ready. You do not want to wait for the entire set to be processed before you see the first row.</p>
+						<p>
+						The world has moved to push; users are waiting for us to catch up. Developers have tools to push data, this is easy. Developers need tools to react to push data.&rdquo;</p>
 					</blockquote>
 				</section>
-				<section data-background='img/mind-blown.gif'></section>
-				<section data-state="slideA">
-					<SlideRenderer trigger="slideA"><img src="img/mind-blown.gif" /></SlideRenderer>
-				</section>
+
 			</section>
 
 			<section id="tempoReal">
@@ -185,8 +194,8 @@ let o = new Observable(observer => {
 					<h3>Why functional programming</h3>
 				</section>
 				<section id='whyfunctional1'>
-					<h3>Function composition</h3>
-					If we use pure functions as basic units of abstraction, and these functions compose as mathematical functions: f ∘ g, and this composition obeys laws: f ∘ (g ∘ h) = (f ∘ g) ∘ h and f ∘ id = f = id ∘ f, then we gain a systematic and proven approach to composing larger parts of smaller parts, that works on every level, at each scale. Smaller functions can be composed into larger functions infinitely, and this composition feels more natural and rigorous than inheritance and class member
+					<h3>Function composition</h3> If we use pure functions as basic units of abstraction, and these functions compose as mathematical functions: f ∘ g, and this composition obeys laws: f ∘ (g ∘ h) = (f ∘ g) ∘ h and f ∘ id = f = id ∘ f, then we gain a systematic and proven approach
+					to composing larger parts of smaller parts, that works on every level, at each scale. Smaller functions can be composed into larger functions infinitely, and this composition feels more natural and rigorous than inheritance and class member
 				</section>
 			</section>
 			<section>
@@ -204,7 +213,7 @@ let o = new Observable(observer => {
 					<source src="/videos/media2.mp4" type="video/mp4" />
 				</video>
 				</section>
-			</section>			
+			</section>
 			<section>
 				<h3>Código tradicional</h3>
 				<div>
@@ -238,6 +247,8 @@ let o = new Observable(observer => {
 $('#result').text(total)
 </code></pre>
 			</section>
+			<section id='everything'><img src='/img/everythingisastream.jpg'></img>
+			</section>
 			<section>
 				<h3>stream de eventos</h3>
 				<button id='example2_btn1' style="width:60px; height: 30px; font-size: 24px">+1</button>
@@ -254,33 +265,133 @@ $('#result').text(total)
 			<section id='example6'></section>
 			<section id='example7'></section>
 			<section id='example8'>
-				Drag And Drop
-				<pre><code is class="javascript hljs" data-trim contenteditable>
+				<section>
+					Drag And Drop
+					<pre><code is class="javascript hljs" data-trim contenteditable>
 
-            let mouseup$ = Rx.Observable.fromEvent(element, 'mouseup')
-            let mousemove$ = Rx.Observable.fromEvent(element, 'mousemove')
-            let mousedown$ = Rx.Observable.fromEvent(element, 'mousedown').map(event => getOffset(event))
-            let mousedrag$ = mousedown$.mergeMap((offsetData) =>
-                mousemove$.map((position) => (calculateNewPositionWithOffset(offsetData,position)))
-                .takeUntil(mouseup$)
-            )
-            mousedrag$.subscribe((resultPosition) => this.updatePosition(resultPosition));
+	            let mouseup$ = Rx.Observable.fromEvent(element, 'mouseup')
+	            let mousemove$ = Rx.Observable.fromEvent(element, 'mousemove')
+	            let mousedown$ = Rx.Observable.fromEvent(element, 'mousedown').map(event => getOffset(event))
+	            let mousedrag$ = mousedown$.mergeMap((offsetData) =>
+	                mousemove$.map((position) => (calculateNewPositionWithOffset(offsetData,position)))
+	                .takeUntil(mouseup$)
+	            )
+	            mousedrag$.subscribe((resultPosition) => this.updatePosition(resultPosition));
 
-        </code></pre>
-				<aside class="notes">
-					code pen https://codepen.io/marcusdb/pen/GEwYZd plain https://codepen.io/marcusdb/pen/rwPOEJ
-				</aside>
-				<div id='dragTarget' style="background-color:#f00; width: 200px; height: 200px; position: absolute; left:400px; padding:0; margin:0; cursor: 'move';">
-					drag me
-				</div>
+	        </code></pre>
+					<aside class="notes">
+						code pen https://codepen.io/marcusdb/pen/GEwYZd plain https://codepen.io/marcusdb/pen/rwPOEJ
+					</aside>
+					<div id='dragTarget' style="background-color:#f00; width: 200px; height: 200px; position: absolute; left:400px; padding:0; margin:0; cursor: 'move';">
+						drag me
+					</div>
+				</section>
+				<section>
+					<h3>LOOK MA NO STATE!!</h3>
+					<img src="img/mind-blown.gif" />
+				</section>
+
 			</section>
 			<section id='example9'></section>
 			<section id='example10'></section>
 			<section id='example11'></section>
-			<section id='everything'><img src='/img/everythingisastream.jpg'></img>
-			</section>
-			<section id='example12'></section>
 
+			<section id='example12'></section>
+			<section id='supernatural' data-background-image="/img/supernatural.gif">
+				<h2>LOOK MA NO STATE!!</h2></section>
+			<section id='advancedtopics'>
+				<h4> What Netflix has to say about it</h4>
+				<blockquote cite="https://medium.com/netflix-techblog/reactive-programming-in-the-netflix-api-with-rxjava-7811c3a1496a" style="font-size:24px">
+
+					<p>&ldquo;Reactive programming with RxJava has enabled Netflix developers to leverage server-side concurrency without the typical thread-safety and synchronization concerns. The API service layer implementation has control over concurrency primitives,
+						which enables us to pursue system performance improvements without fear of breaking client code.
+					</p>
+					<p>RxJava is effective on the server for us and it spreads deeper into our code the more we use it.&rdquo;</p>
+				</blockquote>
+			</section>
+			<section id='learningcurve'><img src="/img/learning.png"></section>
+			<section id="groupBy">
+				Group BY??
+				<pre><code is class="javascript hljs" data-trim contenteditable>
+
+					const people = [{name: 'Sue', age:25},{name: 'Joe', age: 30},{name: 'Frank', age: 25}, {name: 'Sarah', age: 35}];
+					//emit each person
+					const source = Rx.Observable.from(people);
+					//group by age
+					const example = source
+					  .groupBy(person => person.age)
+					  //return as array of each group
+					  .flatMap(group => group.reduce((acc, curr) => [...acc, curr], []))
+					/*
+					  output:
+					  [{age: 25, name: "Sue"},{age: 25, name: "Frank"}]
+					  [{age: 30, name: "Joe"}]
+					  [{age: 35, name: "Sarah"}]
+					*/
+					const subscribe = example.subscribe(val => console.log(val));
+
+				</code></pre>
+			</section>
+			<section id='coolUses'>
+				Nested observables
+				<div style="font-size:14px !important">
+					<p>Partitions of Data<br/> You may partition data from a single source so that it can easily be filtered and shared to many sources. Partitioning data may also be useful for aggregates as we have seen. This is commonly done with the GroupBy operator.
+					</p>
+					<p>
+						Online Game servers<br/> Consider a sequence of servers. New values represent a server coming online. The value itself is a sequence of latency values allowing the consumer to see real time information of quantity and quality of servers available.
+						If a server went down then the inner sequence can signify that by completing.
+					</p>
+					<p>
+					</p>
+					<p>Financial data streams<br/> New markets or instruments may open and close during the day. These would then stream price information and could complete when the market closes.
+					</p>
+					<p>
+						Chat Room<br/> Users can join a chat (outer sequence), leave messages (inner sequence) and leave a chat (completing the inner sequence).
+					</p>
+					<p>
+						File watcher<br/> As files are added to a directory they could be watched for modifications (outer sequence). The inner sequence could represent changes to the file, and completing an inner sequence could represent deleting the file.</p>
+				</div>
+			</section>
+			<section id='concurrency'>
+				<h2>concurrency</h2></section>
+			<section id='backpressure'>
+				<h2>backpressure</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>Lossless (but memory intensive)</th>
+							<th>Lossy</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>buffer</td>
+							<td>throttle</td>
+
+						</tr>
+						<tr>
+							<td>window</td>
+							<td>debounce</td>
+
+						</tr>
+						<tr>
+							<td>pausable</td>
+							<td>sample</td>
+
+						</tr>
+						<tr>
+							<td>...</td>
+							<td>...</td>
+
+						</tr>
+					</tbody>
+				</table>
+
+			</section>
+
+			<section id='obrigado'>
+				<h2>obrigado</h2>
+			</section>
 
 		</div>
 
