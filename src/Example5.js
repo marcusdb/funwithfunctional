@@ -28,12 +28,12 @@ class Example5 extends React.Component {
 
   componentDidMount() {
     let plus$ = Rx.Observable.fromEvent(document.getElementById('example5_btn1'), 'click')
-    .map(() => 1).do((value) => this.draw(value, 'stream1'));
+    .map(() => 1)
 
     let minus$ = Rx.Observable.fromEvent(document.getElementById('example5_btn2'), 'click')
-    .map(() => -1).do((value) => this.draw(value, 'stream2'));
+    .map(() => -1)
 
-    minus$.merge(plus$).do((value) => this.draw(value, 'stream3')).subscribe();
+    minus$.merge(plus$).subscribe();
 
   }
 
