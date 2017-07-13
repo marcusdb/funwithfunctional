@@ -48,7 +48,7 @@ class Example11 extends React.Component {
 
   componentDidMount() {
     let input$ = Rx.Observable.fromEvent(document.getElementById('example11_input1'), 'keyup')
-    .map((evt) => evt.target.value).debounceTime(250).do((value) => this.draw(value, 'stream1'));
+    .map((evt) => evt.target.value).debounceTime(400).do((value) => this.draw(value, 'stream1'));
 
     input$.switchMap(val=>remoteCall(val)).do((value) => this.draw(value, 'stream2')).subscribe((value)=>this.updateResult(value))
 
@@ -69,9 +69,9 @@ class Example11 extends React.Component {
         <pre><code is className="javascript hljs" data-trim contenteditable>
           {`
             let input$ = Rx.Observable.fromEvent(document.getElementById('example11_input1'), 'keyup')
-            .map((evt) => evt.target.value).debounce(100)
+            .map((evt) => evt.target.value).debounce(400)
 
-            input$.switchMap(val=>remoteCall(val)).subscribe((value)=>this.updateResult(value))
+            input$.switchMap(val=>remoteCall(val)).subscribe((value)=>updateResult(value))
 
 `}
         </code></pre>

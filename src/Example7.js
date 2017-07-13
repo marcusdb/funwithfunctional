@@ -75,7 +75,7 @@ class Example7 extends React.Component {
             .map(val=>parseFloat(val)).startWith(0)
 
 
-            second$.combineLatest(plus$,(s1,s2)=>s1+s2).subscribe();
+            second$.combineLatest(first$,(s1,s2)=>s1+s2).subscribe();
 `}
         </code></pre>
         <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>

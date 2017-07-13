@@ -28,12 +28,12 @@ class Example5 extends React.Component {
 
   componentDidMount() {
     let plus$ = Rx.Observable.fromEvent(document.getElementById('example5_btn1'), 'click')
-    .map(() => 1)
+    .map(() => 1).do((value) => this.draw(value, 'stream1'));
 
     let minus$ = Rx.Observable.fromEvent(document.getElementById('example5_btn2'), 'click')
-    .map(() => -1)
+    .map(() => -1).do((value) => this.draw(value, 'stream2'));
 
-    minus$.merge(plus$).subscribe();
+    minus$.merge(plus$).do((value) => this.draw(value, 'stream3')).subscribe();
 
   }
 
@@ -54,12 +54,12 @@ class Example5 extends React.Component {
         <pre><code is className="javascript hljs" data-trim contenteditable>
           {`
             let plus$ = Rx.Observable.fromEvent(document.getElementById('example5_btn1'), 'click')
-            .map(() => 1).do((value) => this.draw(value, 'stream1'));
+            .map(() => 1).
 
             let minus$ = Rx.Observable.fromEvent(document.getElementById('example5_btn2'), 'click')
-            .map(() => -1).do((value) => this.draw(value, 'stream2'));
+            .map(() => -1)
 
-            minus$.merge(plus$).do((value) => this.draw(value, 'stream3')).subscribe();
+            minus$.merge(plus$).subscribe();
 `}
         </code></pre>
         <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>

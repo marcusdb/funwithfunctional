@@ -70,7 +70,7 @@ class Example10 extends React.Component {
           {`
             let input$ = Rx.Observable.fromEvent(document.getElementById('example10_input1'), 'keyup')
             .map((evt) => evt.target.value);
-            input$.switchMap(val=>remoteCall(val)).subscribe(this.updateResult)
+            input$.switchMap(val=>remoteCall(val)).subscribe(updateResult)
 `}
         </code></pre>
         <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>
