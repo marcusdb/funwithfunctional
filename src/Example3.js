@@ -39,7 +39,7 @@ class Example3 extends React.Component {
           {`
 let eventStream =Rx.Observable.fromEvent($("example2_btn1"),'click');
 
-eventStream.do(console.log).subscribe();`}
+eventStream.subscribe();`}
         </code></pre>
         <MarbleStream velocity={80} offset={50} distance={900} marble={this.state.stream1}/>
       </div>

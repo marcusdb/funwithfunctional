@@ -180,6 +180,31 @@ let o = new Observable(observer => {
 					</code></pre>
 				</section>
 			</section>
+			<section id='whyfunctional'>
+				<section id='whyfunctional1'>
+					<h3>Why functional programming</h3>
+				</section>
+				<section id='whyfunctional1'>
+					<h3>Function composition</h3>
+					If we use pure functions as basic units of abstraction, and these functions compose as mathematical functions: f ∘ g, and this composition obeys laws: f ∘ (g ∘ h) = (f ∘ g) ∘ h and f ∘ id = f = id ∘ f, then we gain a systematic and proven approach to composing larger parts of smaller parts, that works on every level, at each scale. Smaller functions can be composed into larger functions infinitely, and this composition feels more natural and rigorous than inheritance and class member
+				</section>
+			</section>
+			<section>
+				<section>
+					<h3>Performance</h3></section>
+				<section id='performance1'>
+					<h6>Performance without function composition</h6>
+					<video data-autoplay>
+					<source src="/videos/media1.mp4" type="video/mp4" />
+				</video>
+				</section>
+				<section id='performance2'>
+					<h6>Performance with function composition</h6>
+					<video data-autoplay>
+					<source src="/videos/media2.mp4" type="video/mp4" />
+				</video>
+				</section>
+			</section>			
 			<section>
 				<h3>Código tradicional</h3>
 				<div>
@@ -255,22 +280,7 @@ $('#result').text(total)
 			<section id='everything'><img src='/img/everythingisastream.jpg'></img>
 			</section>
 			<section id='example12'></section>
-			<section>
-				<section>
-					<h3>Performance</h3></section>
-				<section id='performance1'>
-					<h6>Performance without function composition</h6>
-					<video data-autoplay>
-					<source src="/videos/media1.mp4" type="video/mp4" />
-				</video>
-				</section>
-				<section id='performance2'>
-					<h6>Performance with function composition</h6>
-					<video data-autoplay>
-					<source src="/videos/media2.mp4" type="video/mp4" />
-				</video>
-				</section>
-			</section>
+
 
 		</div>
 
