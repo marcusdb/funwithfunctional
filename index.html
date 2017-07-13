@@ -40,9 +40,7 @@
 				<h4 class="shadow">Marcus David Bronstein @marcusdb</h4>
 			</section>
 			<section>
-				<h4 class="shadow">Marcus David Bronstein</h4>
-				CTO da Rastreabilidade Brasil S.A.
-				marcusdb@gmail.com
+				<h4 class="shadow">Marcus David Bronstein</h4> CTO da Rastreabilidade Brasil S.A. marcusdb@gmail.com
 			</section>
 			<section>
 				<section>
@@ -56,7 +54,7 @@
 						<p>
 							You want to have the result pushed to you when it is ready. Even better, when working with result sets, you want to receive individual results as they are ready. You do not want to wait for the entire set to be processed before you see the first row.</p>
 						<p>
-						The world has moved to push; users are waiting for us to catch up. Developers have tools to push data, this is easy. Developers need tools to react to push data.&rdquo;</p>
+							The world has moved to push; users are waiting for us to catch up. Developers have tools to push data, this is easy. Developers need tools to react to push data.&rdquo;</p>
 					</blockquote>
 				</section>
 
@@ -352,8 +350,27 @@ $('#result').text(total)
 						File watcher<br/> As files are added to a directory they could be watched for modifications (outer sequence). The inner sequence could represent changes to the file, and completing an inner sequence could represent deleting the file.</p>
 				</div>
 			</section>
-			<section id='concurrency'>
-				<h2>concurrency</h2></section>
+			<section id='inception'>
+				Inception or how did you do the freaking cool moving balls
+				<pre><code is class="javascript hljs" data-trim contenteditable>
+					const msElapsed = (scheduler = Scheduler.animationFrame) => Observable.defer(() => {
+					  const start = scheduler.now();
+					  return Observable.interval(0, scheduler).map(() => scheduler.now() - start)
+					})
+					const velocity = (pixelsPerSeg, scheduler = Scheduler.animationFrame) => msElapsed(scheduler)
+					.map(elapsed => parseInt(elapsed * (pixelsPerSeg / 1000)))
+
+					this.subject = new Subject();
+				  this.subscription = this.subject.mergeMap(marble => {
+				    return velocity(this.props.velocity).distinct().takeWhile(distance => distance < (this.props.distance - this.props.offset))
+						.do({
+				      next: (distance)=>this.updateDistance(distance,marble),
+				      complete: () => this.removeMarble(marble)
+				    })
+				  }).subscribe()
+
+				</code></pre>
+			</section>
 			<section id='backpressure'>
 				<h2>backpressure</h2>
 				<table>

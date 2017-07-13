@@ -20,6 +20,8 @@ class MarbleLiner extends React.Component {
       marbles: {}
     }
     this.addMarble.bind(this)
+    this.updateDistance.bind(this)
+    this.removeMarble.bind(this)
   }
   addMarble(marble) {
     this.setState((prevState) => {
@@ -34,54 +36,60 @@ class MarbleLiner extends React.Component {
     })
     this.subject.next(marble)
   }
-  componentDidMount() {
-    this.subject = new Subject();
-    this.subscription = this.subject.mergeMap(marble => {
-      return velocity(this.props.velocity).distinct().takeWhile(distance => distance < (this.props.distance-this.props.offset)).do({
-        next: distance => {
-          this.setState((prevState) => {
-            let newState = {
-              ...prevState
-            }
-            newState.marbles[marble.id] = {
-              ...marble,
-              translate: distance
-            }
-            return newState;
-          })
-        },
-        complete: () => {
-          console.log('onComplete')
-          this.setState((prevState) => {
-            let newState = {
-              ...prevState
-            }
-            delete newState.marbles[marble.id]
-            return newState;
-          })
-        }
-      })
-    }).subscribe()
+
+  updateDistance(distance,marble) {
+    this.setState((prevState) => {
+      let newState = {
+        ...prevState
+      }
+      newState.marbles[marble.id] = {
+        ...marble,
+        translate: distance
+      }
+      return newState;
+    })
   }
-  componentWillUnmount(){
-    this.subscription.unsubscribe()
-  }
-  componentWillReceiveProps(nextProps) {
-    if(this.props.marble.id !==nextProps.marble.id){
-      this.addMarble(nextProps.marble)
+}
+
+removeMarble(marble) {
+  this.setState((prevState) => {
+    let newState = {
+      ...prevState
     }
+    delete newState.marbles[marble.id]
+    return newState;
+  })
+}
+
+componentDidMount() {
+  this.subject = new Subject();
+  this.subscription = this.subject.mergeMap(marble => {
+    return velocity(this.props.velocity).distinct().takeWhile(distance => distance < (this.props.distance - this.props.offset)).do({
+      next: (distance)=>this.updateDistance(distance,marble),
+      complete: () => this.removeMarble(marble)
+    })
+  }).subscribe()
+}
+
+componentWillUnmount() {
+  this.subscription.unsubscribe()
+}
+componentWillReceiveProps(nextProps) {
+  if (this.props.marble.id !== nextProps.marble.id) {
+    this.addMarble(nextProps.marble)
   }
-  render() {
-    return <svg style={{
-      width: '100%',
-      height: '50px'
-    }}> <line x1={this.props.offset} y1="25" x2={this.props.distance} y2="25" style={{
-          stroke: '#fff',
-          strokeWidth: 1
-        }} id="mainLine"/>
-    {Object.keys(this.state.marbles).map(marbleId => <Marble offset={50} key={marbleId} value={this.state.marbles[marbleId].value} translate={this.state.marbles[marbleId].translate}/>)}
-    </svg>
-  }
+}
+render() {
+  return <svg style={{
+    width: '100%',
+    height: '50px'
+  }}>
+    <line x1={this.props.offset} y1="25" x2={this.props.distance} y2="25" style={{
+      stroke: '#fff',
+      strokeWidth: 1
+    }} id="mainLine"/> {Object.keys(this.state.marbles).map(marbleId => <Marble offset={50} key={marbleId} value={this.state.marbles[marbleId].value} translate={this.state.marbles[marbleId].translate}/>)}
+  </svg>
+}
 }
 
 export default MarbleLiner
