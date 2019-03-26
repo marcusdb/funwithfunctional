@@ -2,6 +2,7 @@
 <html>
 
 <head>
+	<title>Reactive</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -303,7 +304,43 @@ $('#result').text(total)
 			<section id='example9'></section>
 			<section id='example10'></section>
 			<section id='example11'></section>
-
+			<section id='Retry'>
+					Customizable retry with increased duration
+					<pre><code is class="javascript hljs" data-trim contenteditable>
+const genericRetryStrategy = (maxRetryAttempts,	scalingDuration, excludedStatusCodes) => (attempts) => {
+	return attempts.pipe(
+		mergeMap((error, i) => {
+			const retryAttempt = i + 1;
+// if maximum number of retries have been met or response is a status code we don't wish to retry, throw error
+			if (retryAttempt > maxRetryAttempts || excludedStatusCodes.find(e => e === error.status)) {
+				return _throw(error);
+			}// retry after 1s, 2s, etc...
+			console.log(`Attempt ${retryAttempt}: retrying in ${retryAttempt * scalingDuration}ms`	); 			
+			return timer(retryAttempt * scalingDuration);
+		}),
+		finalize(() => console.log('We are done!'))
+	);
+};
+	        </code></pre>
+			</section>
+			<section id='Retry1'>
+					Customizable retry usage
+					<pre><code is class="javascript hljs" data-trim contenteditable>
+	fromEvent(document.getElementById("example11_input1"), "keyup").pipe(
+		map(evt => evt.target.value),
+		debounceTime(400),
+		tap(value => delayDrawStream1.next(value)),
+		switchMap(val => remoteCall(val).pipe(
+			retryWhen(genericRetryStrategy({
+				scalingDuration: 2000,
+				excludedStatusCodes: [500]
+			})),
+		)),		
+		tap(value => delayDrawStream2.next(value))
+	).subscribe(value => this.updateResult(value));
+							
+	        </code></pre>
+			</section>
 			<section id='example12'></section>
 			<section id='supernatural' data-background-image="/img/supernatural.gif">
 				<h2>LOOK MA NO STATE!!</h2></section>
@@ -359,23 +396,23 @@ $('#result').text(total)
 				</div>
 			</section>
 			<section id='inception'>
-				Inception or how did you do the freaking cool moving balls
-				<pre><code is class="javascript hljs" data-trim contenteditable>
-					const msElapsed = (scheduler = Scheduler.animationFrame) => Observable.defer(() => {
-					  const start = scheduler.now();
-					  return Observable.interval(0, scheduler).map(() => scheduler.now() - start)
-					})
-					const velocity = (pixelsPerSeg, scheduler = Scheduler.animationFrame) => msElapsed(scheduler)
-					.map(elapsed => parseInt(elapsed * (pixelsPerSeg / 1000)))
-
-					this.subject = new Subject();
-				  this.subscription = this.subject.mergeMap(marble => {
-				    return velocity(this.props.velocity).distinct().takeWhile(distance => distance < (this.props.distance - this.props.offset))
-						.do({
-				      next: (distance)=>this.updateDistance(distance,marble),
-				      complete: () => this.removeMarble(marble)
-				    })
-				  }).subscribe()
+				how did you do the freaking cool moving balls
+				<pre><code is data-trim contenteditable>
+const msElapsed = (scheduler = animationFrameScheduler) => defer(() => {
+	const start = scheduler.now(); 
+	return interval(0, scheduler).pipe(map(() => scheduler.now() - start));
+});
+const velocity = (pixelsPerSeg, scheduler = animationFrameScheduler) =>	msElapsed(scheduler).pipe(
+	map(elapsed => parseInt(elapsed * (pixelsPerSeg / 1000))));
+subject = new Subject().pipe(mergeMap(marble => {
+	return velocity(this.props.velocity).pipe(distinct(),
+		takeWhile(
+			distance => distance < this.props.distance - this.props.offset
+		),
+		tap({
+			next: distance => this.updateDistance(distance, marble),
+			complete: () => this.removeMarble(marble)
+		}));})).subscribe();
 
 				</code></pre>
 			</section>
@@ -433,6 +470,9 @@ $('#result').text(total)
 		// - https://github.com/hakimel/reveal.js#configuration
 		// - https://github.com/hakimel/reveal.js#dependencies
 		Reveal.initialize({
+    
+    height: '100%',
+
 			//parallaxBackgroundImage:'/img/paralax.png',
 			//parallaxBackgroundSize: '2560px 1537px', // CSS syntax, e.g. "2100px 900px" - currently only pixels are supported (don't use % or auto)
 			history: true,

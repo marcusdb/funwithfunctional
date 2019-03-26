@@ -14,14 +14,6 @@ const velocity = (pixelsPerSeg, scheduler = animationFrameScheduler) =>
     map(elapsed => parseInt(elapsed * (pixelsPerSeg / 1000)))
   );
 
-const duration = (ms, scheduler = animationFrameScheduler) =>
-  msElapsed(scheduler).pipe(
-    map(elapsed => elapsed / ms),
-    takeWhile(t => t <= 1)
-  );
-
-const distance = d => t => t * d;
-const animate = duration(2000).pipe(map(distance(200)));
 
 class MarbleLiner extends React.Component {
   constructor(props) {
