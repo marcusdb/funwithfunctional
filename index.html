@@ -2,6 +2,7 @@
 <html>
 
 <head>
+	<title>Reactive</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -31,21 +32,18 @@
 <body>
 	<div class="reveal">
 		<div class="slides">
-			<section data-background="img/stone_2.jpg">
+			<section data-background-color="#FFF" data-background-size="1000px" >
 				
-				<h2 class="shadow" style="color: yellow">React Meetup</h2>
+				<h2 class="shadow" style="color: gray">Tech Talk</h2>
 				<h2 class="shadow">&nbsp;</h2>
 				<h2 class="shadow">&nbsp;</h2>
 				<h2 class="shadow">&nbsp;</h2>
 			</section>
 			<section>
 				<h2 class="shadow">Fun with Functional Reactive Programming</h2>
-				<h4 class="shadow">Marcus David Bronstein @marcusdb</h4>
-			</section>
-			<section>
 				
-				<h4 class="shadow">Marcus David Bronstein</h4> CTO <br/> Rastreabilidade Brasil S.A.<br/> marcusdb@gmail.com
 			</section>
+
 			<section>
 				<section>
 					<blockquote cite="http://www.introtorx.com/Content/v1.0.10621.0/01_WhyRx.html#WhyRx" style="font-size:24px">
@@ -64,11 +62,11 @@
 
 			</section>
 
-			<section id="tempoReal">
+			<section id="RealTime">
 				<section>
-					<h2>Tempo real</h2>
-					<p class="fragment">o que nos leva a código assíncrono</p>
-					<p class="fragment">o que nos leva a callbacks??!</p>
+					<h2>Real Time Perception</h2>
+					<p class="fragment">which takes us to assinchronous code</p>
+					<p class="fragment">which takes us to callbacks??!</p>
 					<aside class="notes">
 						This slide has fragments which are also stepped through in the notes window.
 					</aside>
@@ -206,59 +204,65 @@ let o = new Observable(observer => {
 				<section id='performance1'>
 					<h6>Performance without function composition</h6>
 					<video data-autoplay>
-					<source src="videos/media1.mp4" type="video/mp4" />
+					<source src="/videos/media1.mp4" type="video/mp4" />
 				</video>
 				</section>
 				<section id='performance2'>
 					<h6>Performance with function composition</h6>
 					<video data-autoplay>
-					<source src="videos/media2.mp4" type="video/mp4" />
+					<source src="/videos/media2.mp4" type="video/mp4" />
 				</video>
 				</section>
 			</section>
 			<section>
-				<h3>Código tradicional</h3>
+				<h4>Regular way of coding (in the past...)</h4>
 				<div>
-					<button id='btn1' style="width:60px; height: 30px; font-size: 24px">+1</button> resultado:
+					<button id='btn1' style="width:60px; height: 30px; font-size: 24px">+1</button> total:
 					<span id="result">0</span>
 					<button id='btn2' style="width:60px; height: 30px; font-size: 24px">-1</button>
 					<pre><code class="hljs" data-trim contenteditable>
 						var total = 0;
-						$('#btn1').click(() => {
-							total = total + 1
-							$('#result').text(total)
+						document.getElementById("btn1").addEventListener("click", function(){
+							total = total + 1;
+							document.getElementById("result").innerHTML = total;
 						});
-						$('#btn2').click(() => {
-							total = total - 1
-							$('#result').text(total)
+						document.getElementById("btn2").addEventListener("click", function(){
+							total = total - 1;
+							document.getElementById("result").innerHTML = total;
 						});
 						</code></pre>
 				</div>
 			</section>
 			<section>
-				<h3>mudando os paradigmas</h3>
+				<h3>The future now</h3>
 				<pre class="fragment"><code class="hljs" data-trim contenteditable>
-					let eventos = [+1,+1,-1,+1]
+					let events = [+1,+1,-1,+1]
 </code></pre>
 				<pre class="fragment"><code class="hljs" data-trim contenteditable>
-	var total = eventos.reduce(function(soma, valor) {
-	  return soma + valor;
+	var total = events.reduce(function(total, value) {
+	  return total + value;
 	}, 0);
 </code></pre>
 				<pre class="fragment"><code class="hljs" data-trim contenteditable>
 $('#result').text(total)
 </code></pre>
 			</section>
-			<section id='everything'><img src='img/everythingisastream.jpg'><img>
+			<section id='everything'><img src='/img/everythingisastream.jpg'></img>
 			</section>
 
 			<section>
-				<h3>stream de eventos</h3>
+				<h3>Event Stream</h3>
 				<button id='example2_btn1' style="width:60px; height: 30px; font-size: 24px">+1</button>
 				<pre><code class="javascript hljs" data-trim contenteditable>
-						let eventStream =Rx.Observable.fromEvent($("example2_btn1"),'click')
-
-						eventStream.do(console.log).subscribe();
+					import { fromEvent } from 'rxjs';
+					import { map } from 'rxjs/operators';
+					
+					//create observable that emits click events
+					const source = fromEvent(document.getElementById("btn1"), 'click');
+					//map to string with given event timestamp
+					const example = source.pipe(map(event => `Event time: ${event.timeStamp}`));
+					//output (example): 'Event time: 7276.390000000001'
+					const subscribe = example.subscribe(val => console.log(val));
 					</code></pre>
 
 			</section>
@@ -300,9 +304,45 @@ $('#result').text(total)
 			<section id='example9'></section>
 			<section id='example10'></section>
 			<section id='example11'></section>
-
+			<section id='Retry'>
+					Customizable retry with increased duration
+					<pre><code is class="javascript hljs" data-trim contenteditable>
+const genericRetryStrategy = (maxRetryAttempts,	scalingDuration, excludedStatusCodes) => (attempts) => {
+	return attempts.pipe(
+		mergeMap((error, i) => {
+			const retryAttempt = i + 1;
+// if maximum number of retries have been met or response is a status code we don't wish to retry, throw error
+			if (retryAttempt > maxRetryAttempts || excludedStatusCodes.find(e => e === error.status)) {
+				return _throw(error);
+			}// retry after 1s, 2s, etc...
+			console.log(`Attempt ${retryAttempt}: retrying in ${retryAttempt * scalingDuration}ms`	); 			
+			return timer(retryAttempt * scalingDuration);
+		}),
+		finalize(() => console.log('We are done!'))
+	);
+};
+	        </code></pre>
+			</section>
+			<section id='Retry1'>
+					Customizable retry usage
+					<pre><code is class="javascript hljs" data-trim contenteditable>
+	fromEvent(document.getElementById("example11_input1"), "keyup").pipe(
+		map(evt => evt.target.value),
+		debounceTime(400),
+		tap(value => delayDrawStream1.next(value)),
+		switchMap(val => remoteCall(val).pipe(
+			retryWhen(genericRetryStrategy({
+				scalingDuration: 2000,
+				excludedStatusCodes: [500]
+			})),
+		)),		
+		tap(value => delayDrawStream2.next(value))
+	).subscribe(value => this.updateResult(value));
+							
+	        </code></pre>
+			</section>
 			<section id='example12'></section>
-			<section id='supernatural' data-background-image="img/supernatural.gif">
+			<section id='supernatural' data-background-image="/img/supernatural.gif">
 				<h2>LOOK MA NO STATE!!</h2></section>
 			<section id='advancedtopics'>
 				<h4> What Netflix has to say about it</h4>
@@ -314,7 +354,7 @@ $('#result').text(total)
 					<p>RxJava is effective on the server for us and it spreads deeper into our code the more we use it.&rdquo;</p>
 				</blockquote>
 			</section>
-			<section id='learningcurve'><img src="img/learning.png"></section>
+			<section id='learningcurve'><img src="/img/learning.png"></section>
 			<section id="groupBy">
 				Group BY??
 				<pre><code is class="javascript hljs" data-trim contenteditable>
@@ -356,23 +396,23 @@ $('#result').text(total)
 				</div>
 			</section>
 			<section id='inception'>
-				Inception or how did you do the freaking cool moving balls
-				<pre><code is class="javascript hljs" data-trim contenteditable>
-					const msElapsed = (scheduler = Scheduler.animationFrame) => Observable.defer(() => {
-					  const start = scheduler.now();
-					  return Observable.interval(0, scheduler).map(() => scheduler.now() - start)
-					})
-					const velocity = (pixelsPerSeg, scheduler = Scheduler.animationFrame) => msElapsed(scheduler)
-					.map(elapsed => parseInt(elapsed * (pixelsPerSeg / 1000)))
-
-					this.subject = new Subject();
-				  this.subscription = this.subject.mergeMap(marble => {
-				    return velocity(this.props.velocity).distinct().takeWhile(distance => distance < (this.props.distance - this.props.offset))
-						.do({
-				      next: (distance)=>this.updateDistance(distance,marble),
-				      complete: () => this.removeMarble(marble)
-				    })
-				  }).subscribe()
+				how did you do the freaking cool moving balls
+				<pre><code is data-trim contenteditable>
+const msElapsed = (scheduler = animationFrameScheduler) => defer(() => {
+	const start = scheduler.now(); 
+	return interval(0, scheduler).pipe(map(() => scheduler.now() - start));
+});
+const velocity = (pixelsPerSeg, scheduler = animationFrameScheduler) =>	msElapsed(scheduler).pipe(
+	map(elapsed => parseInt(elapsed * (pixelsPerSeg / 1000))));
+subject = new Subject().pipe(mergeMap(marble => {
+	return velocity(this.props.velocity).pipe(distinct(),
+		takeWhile(
+			distance => distance < this.props.distance - this.props.offset
+		),
+		tap({
+			next: distance => this.updateDistance(distance, marble),
+			complete: () => this.removeMarble(marble)
+		}));})).subscribe();
 
 				</code></pre>
 			</section>
@@ -430,7 +470,10 @@ $('#result').text(total)
 		// - https://github.com/hakimel/reveal.js#configuration
 		// - https://github.com/hakimel/reveal.js#dependencies
 		Reveal.initialize({
-			//parallaxBackgroundImage:'img/paralax.png',
+    
+    height: '100%',
+
+			//parallaxBackgroundImage:'/img/paralax.png',
 			//parallaxBackgroundSize: '2560px 1537px', // CSS syntax, e.g. "2100px 900px" - currently only pixels are supported (don't use % or auto)
 			history: true,
 
