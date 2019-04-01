@@ -8,9 +8,7 @@
   "scripts": {
     "test": "grunt test",
     "start": "grunt serve",
-    "build": "grunt",
-    "pack-dev": "webpack --mode development",
-    "pack": "webpack --mode production"
+    "build": "grunt"    
   },
   "author": {
     "name": "Hakim El Hattab",
